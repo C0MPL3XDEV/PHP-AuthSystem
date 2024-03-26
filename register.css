@@ -13,11 +13,11 @@ body {
     height: 460px;
     margin: 0 auto;
     justify-content: center;
-    display: flex;
     align-items: center;
     box-shadow: 27px 37px 15px -3px rgba(0,0,0,0.3);
     border: 1px solid #b7b7b7;
     border-radius: 30px;
     background-color: #212529;
     color: #fff;
+    text-align: center;
 }
