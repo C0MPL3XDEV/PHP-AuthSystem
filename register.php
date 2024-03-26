@@ -1,14 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <?php include ("connect-db.php"); ?>
-<head>
-    <meta charset="UTF-8">
-    <title>Registration Page</title>
-    <link rel="stylesheet" href="register.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-</head>
-<body style="background-color: #212529">
+
 <?php
+
+global $connection;
+session_start();
 
 ini_set('display_errors', 1);
 
@@ -19,18 +16,25 @@ if (isset($_POST["submit"])) {
     $email = $_POST["usermail"]."@".$_POST["mailserver"];
 
     // check email unique
-    $verify_query = mysqli_execute_query($connection, "SELECT users.email FROM users WHERE users.email = $email", ['DEU']);
+    $verify_query = mysqli_execute_query($connection, "SELECT users.email, users.username FROM users WHERE users.email = '$email' OR users.username = '$username'");
     if (mysqli_num_rows($verify_query) != 0) {
-        echo "<div class='container'>
-                <h1>Email Already Exist</h1>
-              </div>";
+        header("Location: existing_account.php");
     } else {
-        echo "<div class='container'>
-                <h1>Email Is OK</h1>
-              </div>";
+        $insert_query = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$password')";
+        $execute = mysqli_execute_query($connection, $insert_query);
+        $_SESSION['username'] = $username;
+        $_SESSION["email"] = $email;
+        header("Location: register_success.php");
     }
 }
 ?>
+<head>
+    <meta charset="UTF-8">
+    <title>Registration Page</title>
+    <link rel="stylesheet" href="register.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+</head>
+<body style="background-color: #212529">
    <div class="container" data-bs-theme="dark">
        <form action="register.php" method="POST">
             <h1>Registration Form</h1>
