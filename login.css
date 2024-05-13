@@ -21,3 +21,8 @@ body {
     background-color: #212529;
     color: #fff;
 }
+
+#card-div1 {
+    background: red;
+    color: white;
+}

@@ -5,7 +5,6 @@
 <?php
 
 global $connection;
-session_start();
 
 ini_set('display_errors', 1);
 
@@ -17,14 +16,18 @@ if (isset($_POST["submit"])) {
 
     // check email unique
     $verify_query = mysqli_execute_query($connection, "SELECT users.email, users.username FROM users WHERE users.email = '$email' OR users.username = '$username'");
+    /** @noinspection PhpIfWithCommonPartsInspection */
     if (mysqli_num_rows($verify_query) != 0) {
         header("Location: existing_account.php");
+        exit();
     } else {
+        session_start();
         $insert_query = "INSERT INTO users (username, email, password) VALUES ('$username', '$email', '$password')";
-        $execute = mysqli_execute_query($connection, $insert_query);
+        $execute = mysqli_query($connection, $insert_query);
         $_SESSION['username'] = $username;
-        $_SESSION["email"] = $email;
+        $_SESSION['email'] = $email;
         header("Location: register_success.php");
+        exit();
     }
 }
 ?>
