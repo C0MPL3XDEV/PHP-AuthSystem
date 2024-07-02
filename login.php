@@ -7,11 +7,13 @@ include ("connect-db.php");
 if(isset($_POST['submit'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
-    print($username);
-    $login_query = "SELECT * FROM users WHERE username='$username' AND password='$password'";
-    $result = mysqli_query($connection, $login_query);
+    $login_query = "SELECT * FROM users WHERE username='$username'";
+    $query_hash = "SELECT password FROM users WHERE username='$username'";
+    $result = mysqli_execute_query($connection, $login_query);
+    $user_hash = mysqli_execute_query($connection, $query_hash);
+    $array = mysqli_fetch_array($user_hash);
 
-    if (mysqli_num_rows($result) > 0) {
+    if (mysqli_num_rows($result) > 0 and password_verify($password, $array[0])) {
         $_SESSION['username'] = $username;
         header("Location: home.php?$username");
         exit();
@@ -24,9 +26,6 @@ if(isset($_POST['submit'])) {
             </div>
         ";
     }
-
-$result->free();
-mysqli_close($connection);
 }
 ?>
 
